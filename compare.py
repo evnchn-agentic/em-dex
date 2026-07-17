@@ -46,13 +46,17 @@ def iter_model_lines(path):
 def scan_two(openers, roots, excludes, apat, bpat):
     ca = {o["phrase"]: 0 for o in openers}
     cb = {o["phrase"]: 0 for o in openers}
-    seen = {"a": 0, "b": 0}
+    seen = {"a": 0, "b": 0, "ambiguous": 0}
     for root in roots:
         for path in glob.glob(os.path.join(os.path.expanduser(root), "**", "*.jsonl"), recursive=True):
             if any(fnmatch.fnmatch(path, ex) for ex in excludes):
                 continue
             for model, line in iter_model_lines(path):
-                side = "a" if apat in model else ("b" if bpat in model else None)
+                ina, inb = apat in model, bpat in model
+                if ina and inb:            # overlapping cohort patterns — don't silently pick A
+                    seen["ambiguous"] += 1
+                    continue
+                side = "a" if ina else ("b" if inb else None)
                 if side is None:
                     continue
                 s = dex.LEAD.sub("", line)
@@ -143,14 +147,15 @@ def main():
     out = os.path.expanduser(a.out)
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     Path(out).write_text(render(openers, ca, cb, seen, la, lb))
-    print(f"[{la}] {seen['a']:,} openers vs [{lb}] {seen['b']:,} openers")
+    print(f"[{la}] {seen['a']:,} openers vs [{lb}] {seen['b']:,} openers"
+          + (f" · {seen['ambiguous']:,} skipped (matched both cohorts)" if seen.get("ambiguous") else ""))
     ta = sum(ca.values()) or 1; tb = sum(cb.values()) or 1
     div = sorted(openers, key=lambda o: -abs(ca[o["phrase"]]/ta - cb[o["phrase"]]/tb))
     print("top divergences:")
     for o in div[:6]:
         ra = ca[o["phrase"]]/ta*100; rb = cb[o["phrase"]]/tb*100
         print(f"  {o['phrase']:<24} {ra:5.1f}% vs {rb:5.1f}%  ({ra-rb:+.1f}pp)")
-    print(f"\nwrote {out}")
+    print(f"\nwrote {out.replace(os.path.expanduser('~'), '~')}")
 
 if __name__ == "__main__":
     main()

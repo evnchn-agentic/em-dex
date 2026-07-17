@@ -30,7 +30,9 @@ def load_base(path):
     data = json.loads(Path(path).read_text())
     for o in data["openers"]:
         pat = o.get("match") or re.escape(o["phrase"])
-        o["_re"] = re.compile(r'(?:%s)\b' % pat, re.IGNORECASE)
+        # em-dex counts EM-DASH openers only: phrase, then light punct/space, then an em/en dash.
+        # ("Done —" counts; "Done." / "Wait, I think…" do not.)
+        o["_re"] = re.compile(r'(?:%s)[\s,;:!.…]*[—–]' % pat, re.IGNORECASE)
     return data["openers"]
 
 def resolve_opinion(name):
@@ -201,7 +203,7 @@ def main():
     ap.add_argument("--opinion", default=None, help="opinion pack name (e.g. 'evan') or path; omit for neutral")
     ap.add_argument("--roots", nargs="+", default=DEF_ROOTS)
     ap.add_argument("--exclude", nargs="*", default=[])
-    ap.add_argument("--trainer", default=os.environ.get("USER", "you"))
+    ap.add_argument("--trainer", default="you", help="display label; keep generic in shared output (defaults 'you', never $USER)")
     ap.add_argument("--out", default=str(HERE / "em-dex.html"))
     a = ap.parse_args()
 
@@ -219,7 +221,7 @@ def main():
     for o in openers:
         c = counts[o["phrase"]]
         print(f"  {'✓' if c else '·'} {o['phrase']:<26} {c}")
-    print(f"\nwrote {out}")
+    print(f"\nwrote {out.replace(os.path.expanduser('~'), '~')}")
 
 if __name__ == "__main__":
     main()

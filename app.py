@@ -26,7 +26,10 @@ OP_NAME = os.environ.get("DEX_OPINION", "evan")
 OPINION = None if OP_NAME.lower() in ("none", "", "off") else dex.resolve_opinion(OP_NAME)
 ROOTS = [os.path.expanduser(r) for r in dex.DEF_ROOTS]
 EXCLUDE = [os.path.expanduser(x) for x in os.environ.get("DEX_EXCLUDE", "").split(os.pathsep) if x]
-POLL = int(os.environ.get("DEX_POLL", "20"))
+try:
+    POLL = int(os.environ.get("DEX_POLL", "20"))
+except ValueError:
+    POLL = 20
 NATIVE = os.environ.get("DEX_NATIVE", "1") == "1"
 TITLE = OPINION["title"] if OPINION else "em-dex (neutral)"
 
@@ -38,7 +41,7 @@ def run_scan():
     newly = []
     if state["primed"]:
         for o in OPENERS:
-            if state["counts"].get(o["phrase"], 0) == 0 and counts.get(o["phrase"], 0) > 0:
+            if counts.get(o["phrase"], 0) > state["counts"].get(o["phrase"], 0):
                 newly.append(o)
     state.update(counts=counts, files=files, blocks=blocks, primed=True)
     return newly
