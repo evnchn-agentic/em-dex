@@ -1,0 +1,28 @@
+{
+  "_about": "em-dex NEUTRAL base. Just the openers to index + how to match them. NO tiers, NO hints, NO value judgments — rarity is computed from YOUR observed frequency and means nothing more than 'seldom emitted'. Opinions (tiers/pedagogy/framing) live in opinions/*.json and are LOADED, never baked in. `match` is an optional regex of alternate forms (defaults to the phrase); the scanner anchors it to line/paragraph start.",
+  "openers": [
+    { "phrase": "Done",        "emoji": "✅" },
+    { "phrase": "On it",       "emoji": "🏃" },
+    { "phrase": "Got it",      "emoji": "👍" },
+    { "phrase": "Yes",         "emoji": "🟢" },
+    { "phrase": "Verified",    "emoji": "🔬" },
+    { "phrase": "Confirmed",   "emoji": "☑️" },
+    { "phrase": "Found it",    "emoji": "🔦" },
+    { "phrase": "Fixed",       "emoji": "🔧" },
+    { "phrase": "Noted",       "emoji": "📝" },
+    { "phrase": "Both done",   "emoji": "🎉", "match": "Both done|Both are done|Both tasks done" },
+    { "phrase": "Hold on",     "emoji": "✋" },
+    { "phrase": "Wait",        "emoji": "⏸️" },
+    { "phrase": "Actually",    "emoji": "🔄" },
+    { "phrase": "Good catch",  "emoji": "🥅" },
+    { "phrase": "Good question","emoji": "❓" },
+    { "phrase": "Interesting", "emoji": "🧐" },
+    { "phrase": "Ah",          "emoji": "💡" },
+    { "phrase": "Hmm",         "emoji": "🤔", "match": "Hmm+" },
+    { "phrase": "Huh",         "emoji": "🫤" },
+    { "phrase": "Whoa",        "emoji": "😲", "match": "Whoa|Woah" },
+    { "phrase": "Holy shit",   "emoji": "🤯", "match": "Holy shit|Holy cow|Holy hell" },
+    { "phrase": "Oh no",       "emoji": "😱", "match": "Oh no|Oh dear|Yikes" },
+    { "phrase": "You're absolutely right", "emoji": "✨", "match": "You'?re absolutely right|You are absolutely right" }
+  ]
+}

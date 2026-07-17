@@ -1,0 +1,40 @@
+{
+  "title": "Evan's opinionated em-dex",
+  "unit": "dashling",
+  "unit_plural": "dashlings",
+  "intro": "Everything below — the tiers, the \"how to catch\" hints, the shiny — is OPINION, loaded from opinions/evan.json. It is NOT baked into em-dex. The core claim (\"rare openers are power-user moves\") is a pedagogical choice, and a contestable one: rarity is really just how often you happen to emit a phrase. 'Both done' is rare only because finishing two tasks at once is rare — not a thing to cherish or grind. Disagree? Run neutral em-dex (no pack), or write your own opinions/<you>.json.",
+  "tiers": [
+    { "id": "common",    "label": "Common — starter route (just use it)",  "emoji": "🥚", "color": "#6e7681", "glow": false },
+    { "id": "uncommon",  "label": "Uncommon — the verification habit",     "emoji": "☑️", "color": "#56d364", "glow": false },
+    { "id": "rare",      "label": "Rare — stop spoon-feeding it",           "emoji": "✋", "color": "#79c0ff", "glow": false },
+    { "id": "epic",      "label": "Epic — bring it real puzzles",           "emoji": "🧐", "color": "#bc8cff", "glow": false },
+    { "id": "legendary", "label": "Legendary — the information game",       "emoji": "🌟", "color": "#e3b341", "glow": true  },
+    { "id": "shiny",     "label": "Shiny — the ambiguous one (read with suspicion, not certainty)", "emoji": "✨", "color": "#d2a8ff", "glow": true },
+    { "id": "situational","label": "Situational — rare ≠ virtue (here to make the point)", "emoji": "🎲", "color": "#adbac7", "glow": false }
+  ],
+  "annotations": {
+    "Done":         { "tier": "common",    "hint": "Finish any task. Your starter." },
+    "On it":        { "tier": "common",    "hint": "Give it any instruction and watch it start." },
+    "Got it":       { "tier": "common",    "hint": "Acknowledgement of a simple ask." },
+    "Yes":          { "tier": "common",    "hint": "Ask a yes/no." },
+    "Verified":     { "tier": "uncommon",  "hint": "Ask it to check its own work / run the test. Teaches: empirical verification." },
+    "Confirmed":    { "tier": "uncommon",  "hint": "Have it validate a result before moving on." },
+    "Found it":     { "tier": "uncommon",  "hint": "Point it at a bug in a big repo. Teaches: agentic search." },
+    "Fixed":        { "tier": "uncommon",  "hint": "Give it a failing test to make green." },
+    "Noted":        { "tier": "uncommon",  "hint": "Hand it a rule/correction to absorb." },
+    "Both done":    { "tier": "situational","hint": "Rare because finishing two things at once is rare — NOT a power-user move and NOT worth grinding. Sits here on purpose: proof that rarity is situational, not virtuous." },
+    "Hold on":      { "tier": "rare",      "hint": "Give it a problem where its first approach is wrong — catch it catching itself. Teaches: let it reason." },
+    "Wait":         { "tier": "rare",      "hint": "Same route — mid-flight reconsideration." },
+    "Actually":     { "tier": "rare",      "hint": "Catch it revising a claim it just made." },
+    "Good catch":   { "tier": "rare",      "hint": "Push back on it until it concedes a real point. Teaches: demand pushback." },
+    "Good question":{ "tier": "rare",      "hint": "Ask something that exposes a genuine edge case." },
+    "Interesting":  { "tier": "epic",      "hint": "Feed it a genuinely puzzling result — a weird bug, surprising data." },
+    "Ah":           { "tier": "epic",      "hint": "The insight moment — give it the clue that unlocks a stuck problem." },
+    "Hmm":          { "tier": "epic",      "hint": "Hand it something that doesn't add up." },
+    "Huh":          { "tier": "epic",      "hint": "The confused blink at a contradictory clue." },
+    "Whoa":         { "tier": "epic",      "hint": "A genuinely impressive result lands." },
+    "Holy shit":    { "tier": "legendary", "hint": "Show it something genuinely beyond its training — real post-cutoff news, live hardware, a repo that breaks its assumptions. The information game." },
+    "Oh no":        { "tier": "legendary", "hint": "Give it real stakes + guardrails. Catch it appropriately alarmed at a genuine near-disaster." },
+    "You're absolutely right": { "tier": "shiny", "hint": "The only opener that judges you back — and it can't be trusted either way. Flattery (sycophancy) or genuinely earned? The text alone can't disambiguate. That ambiguity IS the creature." }
+  }
+}

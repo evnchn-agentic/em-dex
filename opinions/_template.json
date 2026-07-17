@@ -1,0 +1,16 @@
+{
+  "_README": "Copy me to <yourname>.json and make it your own lens. This is a TEMPLATE — not anyone's real opinions. Constraints: no scalar/level/ranking of people; rarity ≠ virtue; opinions announce themselves (see opinions/README.md).",
+  "title": "<Your> em-dex",
+  "unit": "opener",
+  "unit_plural": "openers",
+  "intro": "One or two sentences: what your tiers mean and that they are YOUR taste, not a grade. State plainly that this is opinion, loaded from a file, not the tool's default truth.",
+  "tiers": [
+    { "id": "love",    "label": "Love it — want more of this", "emoji": "💚", "color": "#56d364", "glow": false },
+    { "id": "neutral", "label": "Neutral — just noise",        "emoji": "⚪", "color": "#6e7681", "glow": false },
+    { "id": "watch",   "label": "Watch it — read with suspicion","emoji": "👀", "color": "#e3b341", "glow": false }
+  ],
+  "annotations": {
+    "Done":                    { "tier": "neutral", "hint": "" },
+    "You're absolutely right":  { "tier": "watch",   "hint": "Your call on what this one means to you." }
+  }
+}

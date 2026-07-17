@@ -1,0 +1,11 @@
+# venv / python
+.venv/
+__pycache__/
+*.pyc
+
+# generated dashboards & screenshots (regenerate with scan.py / compare.py)
+em-dex*.html
+*.png
+
+# local opinion packs you don't want to publish (yours stays; teammates' are theirs)
+opinions/*.local.json
