@@ -24,7 +24,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 DEF_ROOTS = ["~/.claude/projects", "~/.claude-b/projects"]
-CACHE = {}  # path -> ((mtime_ns, size), counts, blocks); module-level so it outlives NiceGUI script-mode re-runs
+CACHE = {}  # path -> ((mtime_ns, size, openers hash), counts, blocks); module-level so it outlives NiceGUI script-mode re-runs
 LEAD = re.compile(r'^[\s>#*_\-]*(?:\d+[.)]\s*)?')
 
 def load_base(path):
@@ -44,7 +44,7 @@ def resolve_opinion(name):
         p = HERE / "opinions" / (name if name.endswith(".json") else f"{name}.json")
     return json.loads(p.read_text())
 
-def iter_assistant_lines(path):
+def iter_assistant_lines(path, strict=False):
     """Yield each line of assistant-authored text from a JSONL. HARNESS-SPECIFIC."""
     try:
         with open(path, "r", encoding="utf-8", errors="replace") as f:
@@ -66,11 +66,13 @@ def iter_assistant_lines(path):
                 elif isinstance(content, str):
                     yield from content.splitlines()
     except (OSError, IOError):
+        if strict:
+            raise
         return
 
 def _scan_file(path, openers):
     counts, blocks = {}, 0
-    for line in iter_assistant_lines(path):
+    for line in iter_assistant_lines(path, strict=True):
         blocks += 1
         s = LEAD.sub("", line)
         if not s:
@@ -86,6 +88,7 @@ def scan(openers, roots, excludes, cache=None):
     counts = {o["phrase"]: 0 for o in openers}
     files = blocks = 0
     seen = set()
+    sig = hash(tuple(o["_re"].pattern for o in openers))
     for root in roots:
         for path in glob.glob(os.path.join(os.path.expanduser(root), "**", "*.jsonl"), recursive=True):
             if any(fnmatch.fnmatch(path, ex) for ex in excludes):
@@ -96,10 +99,13 @@ def scan(openers, roots, excludes, cache=None):
                 continue
             files += 1
             seen.add(path)
-            key = (st.st_mtime_ns, st.st_size)
+            key = (st.st_mtime_ns, st.st_size, sig)
             entry = cache.get(path)
             if entry is None or entry[0] != key:
-                entry = cache[path] = (key, *_scan_file(path, openers))
+                try:
+                    entry = cache[path] = (key, *_scan_file(path, openers))
+                except OSError:  # unreadable now: count nothing, retry next scan
+                    entry = (key, {}, 0)
             _, c, b = entry
             blocks += b
             for phrase, n in c.items():

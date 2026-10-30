@@ -140,6 +140,8 @@ async def tick():
         newly = await run.io_bound(run_scan)
     finally:
         state["busy"] = False
+    if newly is None:  # cancelled: the client is gone
+        return
     for o in newly:
         ui.notify(f'Caught {o["phrase"]}! {o["emoji"]}', type="positive", position="top")
         mac_notify("— em-dex — new catch!", f'{o["emoji"]} {o["phrase"]}')
