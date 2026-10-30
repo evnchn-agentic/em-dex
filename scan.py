@@ -88,7 +88,7 @@ def scan(openers, roots, excludes, cache=None):
     counts = {o["phrase"]: 0 for o in openers}
     files = blocks = 0
     seen = set()
-    sig = hash(tuple(o["_re"].pattern for o in openers))
+    sig = hash(tuple((o["phrase"], o["_re"].pattern) for o in openers))
     for root in roots:
         for path in glob.glob(os.path.join(os.path.expanduser(root), "**", "*.jsonl"), recursive=True):
             if any(fnmatch.fnmatch(path, ex) for ex in excludes):

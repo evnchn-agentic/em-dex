@@ -40,6 +40,9 @@ def main():
         c4, _, _ = dex.scan(OPENERS[1:], [d], [], cache)  # opener set changed: no stale entries
         assert PHRASE not in c4 and c4 == dex.scan(OPENERS[1:], [d], [])[0]
 
+        renamed = [{**OPENERS[0], "phrase": "renamed"}] + OPENERS[1:]  # same pattern, new phrase
+        assert dex.scan(renamed, [d], [], cache)[0]["renamed"] == 3
+
         f.chmod(0)  # unreadable once: must not be cached as empty
         os.utime(f, ns=(time.time_ns(), time.time_ns() + 2 * 10**9))
         assert dex.scan(OPENERS, [d], [], cache)[0][PHRASE] == 1
