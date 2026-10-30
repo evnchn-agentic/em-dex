@@ -24,6 +24,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 DEF_ROOTS = ["~/.claude/projects", "~/.claude-b/projects"]
+CACHE = {}  # path -> ((mtime_ns, size), counts, blocks); module-level so it outlives NiceGUI script-mode re-runs
 LEAD = re.compile(r'^[\s>#*_\-]*(?:\d+[.)]\s*)?')
 
 def load_base(path):
@@ -67,22 +68,44 @@ def iter_assistant_lines(path):
     except (OSError, IOError):
         return
 
-def scan(openers, roots, excludes):
+def _scan_file(path, openers):
+    counts, blocks = {}, 0
+    for line in iter_assistant_lines(path):
+        blocks += 1
+        s = LEAD.sub("", line)
+        if not s:
+            continue
+        for o in openers:
+            if o["_re"].match(s):
+                counts[o["phrase"]] = counts.get(o["phrase"], 0) + 1
+    return counts, blocks
+
+def scan(openers, roots, excludes, cache=None):
+    """Pass the same `cache` dict on every call to re-parse only files whose size/mtime changed."""
+    cache = {} if cache is None else cache
     counts = {o["phrase"]: 0 for o in openers}
     files = blocks = 0
+    seen = set()
     for root in roots:
         for path in glob.glob(os.path.join(os.path.expanduser(root), "**", "*.jsonl"), recursive=True):
             if any(fnmatch.fnmatch(path, ex) for ex in excludes):
                 continue
+            try:
+                st = os.stat(path)
+            except OSError:
+                continue
             files += 1
-            for line in iter_assistant_lines(path):
-                blocks += 1
-                s = LEAD.sub("", line)
-                if not s:
-                    continue
-                for o in openers:
-                    if o["_re"].match(s):
-                        counts[o["phrase"]] += 1
+            seen.add(path)
+            key = (st.st_mtime_ns, st.st_size)
+            entry = cache.get(path)
+            if entry is None or entry[0] != key:
+                entry = cache[path] = (key, *_scan_file(path, openers))
+            _, c, b = entry
+            blocks += b
+            for phrase, n in c.items():
+                counts[phrase] += n
+    for gone in cache.keys() - seen:
+        cache.pop(gone, None)
     return counts, files, blocks
 
 # ── rendering ────────────────────────────────────────────────────────────────

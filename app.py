@@ -18,7 +18,7 @@ import json, os, subprocess
 from pathlib import Path
 
 import scan as dex
-from nicegui import ui
+from nicegui import run, ui
 
 HERE = Path(__file__).parent
 OPENERS = dex.load_base(HERE / "openers.json")
@@ -37,7 +37,7 @@ state = {"counts": {o["phrase"]: 0 for o in OPENERS}, "files": 0, "blocks": 0, "
 
 
 def run_scan():
-    counts, files, blocks = dex.scan(OPENERS, ROOTS, EXCLUDE)
+    counts, files, blocks = dex.scan(OPENERS, ROOTS, EXCLUDE, dex.CACHE)
     newly = []
     if state["primed"]:
         for o in OPENERS:
@@ -132,8 +132,15 @@ def dex_body():
                         _card(o["emoji"], o["phrase"], None, "never emitted", caught=False)
 
 
-def tick():
-    for o in run_scan():
+async def tick():
+    if state.get("busy"):
+        return
+    state["busy"] = True
+    try:
+        newly = await run.io_bound(run_scan)
+    finally:
+        state["busy"] = False
+    for o in newly:
         ui.notify(f'Caught {o["phrase"]}! {o["emoji"]}', type="positive", position="top")
         mac_notify("— em-dex — new catch!", f'{o["emoji"]} {o["phrase"]}')
     dex_body.refresh()
