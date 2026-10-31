@@ -1,3 +1,6 @@
+> **Deprecated (31 Oct 2026).** The em-dash habit this tool tracks has become rare in the sessions I measured, so I am no longer working on it. In my own Claude Code transcripts from 20 to 30 Sep 2026, Opus 5 wrote 3.24 em-dashes per 1,000 characters and Opus 5.5 wrote 0.03. From early October the weekly rate has stayed between 0.01 and 0.07. The drop came with the switch to Opus 5.5; my writing skills were already switched on for weeks before it. The code stays here and still runs if your model still emits them.
+
+
 # — em-dex
 
 The **em-dash opener dex**. Agents love the em-dash — `XXX — YYY` — so the thing
